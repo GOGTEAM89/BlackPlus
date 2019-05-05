@@ -1,0 +1,8 @@
+COUNTER=0
+while true; do
+    kill -9 $(pgrep tg)
+	let COUNTER=COUNTER+1
+	echo -e "\033[0;32mTDBot successfully reloaded $COUNTER times!\033[0m"
+	echo ""
+    sleep 10800
+done

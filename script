@@ -1,0 +1,166 @@
+THIS_DIR=$(cd $(dirname $0); pwd);cd $THIS_DIR
+
+config() {
+  printf '%s\n' "
+default_profile = \"main\"
+main =  {
+  test = false;
+  config_directory = \"$THIS_DIR/TG-data\";
+  language_code = \"en\";
+  use_file_db = true;
+  use_file_gc = true;
+  file_readable_names = true;
+  use_secret_chats = true;
+  use_chat_info_db = true;
+  use_message_db = true;
+  logname = \"\";
+  verbosity = 0;
+  lua_script = \"$THIS_DIR/bot.lua\"
+}" > "$THIS_DIR"/BlackPlus.TG.config
+}
+
+luaconfig() {
+  printf '%s\n' "
+do local _ = {
+  Cmd = "^[!/#]",
+  Support = {
+    bot = "BlackSupport_Bot",
+    group_link = "https://t.me/joinchat/AAAAAAAAAAAAAAAAAAAAAAAA",
+    id = -1001104749557,
+    user = "SubProcess"
+  },
+  channel = "SubCreator",
+  db = 5,
+  disabled_channels = {},
+  expired_groups = {},
+  helper = {
+    plugins = {
+      "inline.lua",
+      "BP-MGR.lua",
+      "pv.lua"
+    },
+    token = "123456789:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+  },
+  log = {
+    admin = 56693692,
+    chat = 56693692
+  },
+  plugins = {
+    "Plugins",
+    "messageProcessor",
+    "moderationCommands",
+    "Administration",
+    "helperCallbacks",
+    "basicCommands"
+  },
+  print = true,
+  sudo_users = {
+    56693692,
+    123456789
+  }
+}
+return _
+end
+
+" > "$THIS_DIR"/config.lua
+}
+
+install() {
+ sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+ sudo apt-get update
+ sudo apt-get install g++-4.7 c++-4.7
+ sudo apt-get install gcc-4.9
+ sudo apt-get upgrade libstdc++6
+ sudo apt-get install libreadline-dev libconfig-dev libssl-dev lua5.2 liblua5.2-dev lua-socket lua-sec lua-expat libevent-dev make unzip git redis-server autoconf g++ libjansson-dev libpython-dev expat libexpat1-dev
+ sudo apt-get install screen
+ sudo apt-get install libnotify-dev
+ apt-get install libconfig++9v5 libstdc++6
+ sudo apt-get install libconfig++8-dev
+ sudo apt-get install lua-lgi
+ sudo apt-get install toilet
+ wget http://luarocks.org/releases/luarocks-2.2.2.tar.gz
+ tar zxpf luarocks-2.2.2.tar.gz
+ mv luarocks-2.2.2 luarocks
+ cd luarocks
+ ./configure; sudo make bootstrap
+ sudo luarocks install luasocket
+ sudo luarocks install lua-lgi
+ sudo luarocks install luasec
+ sudo luarocks install redis-lua
+ sudo luarocks install lua-term
+ sudo luarocks install serpent
+ sudo luarocks install dkjson
+ sudo luarocks install lanes
+ sudo luarocks install Lua-cURL
+ chmod +x tg
+ rm -rf 'luarocks-2.2.2.tar.gz'
+ rm -rf 'luarocks'
+ config
+}
+
+login() {
+  killall -9 tg
+  echo ""
+  echo -e "\033[0;32mPhone number:\033[0m"
+  read number
+ ./tg --config="$THIS_DIR"/BlackPlus.TG.config --login --phone=${number}
+}
+
+if [ "$1" = "config" ]; then 
+  config 
+elif [ "$1" = "install" ]; then 
+  install
+elif [ "$1" = "login" ]; then 
+  login
+else
+  if [ ! -f ./config.lua ] || [ ! -f ./BlackPlus.TG.config ] || [ ! -f ./tg ] ; then
+   if  [ ! -f ./config.lua ] ; then 
+     echo -e "\033[0;31mConfig.lua not found!\033[0m"
+	 sleep 1
+     echo -e "\033[0;32mi go to Creating a new config for your bot :)\033[0m"
+	 sleep 2
+      luaconfig
+     echo -e "\033[0;32mConfig Created succesfully.\033[0m"
+	 sleep 3
+   fi 
+   if [ ! -f ./BlackPlus.TG.config ] ; then 
+     echo -e "\033[0;31mTG config Not found!\033[0m"
+	 sleep 1
+     echo -e "\033[0;32mnow we installing the Bot required files.\033[0m"
+	 sleep 2
+     config
+     echo -e "\033[0;33mTelegram Configuration files Installion setup completed\033[0m"
+	 sleep 3
+   fi
+   if [ ! -f ./tg ] ; then 
+     echo -e "\033[0;31mTG Not found!\033[0m"
+	 sleep 1
+     echo -e "\033[0;32mnow we installing the Bot required files.\033[0m"
+	 sleep 2
+     install
+     echo -e "\033[0;32mTG Installion completed\033[0m"
+     echo " " 
+     echo " "
+	 sleep 3
+   fi
+	 killall -9 tg
+	 echo ""
+	 echo -e "\033[0;32mPhone number:\033[0m"
+	 read number
+	 ./tg --config="$THIS_DIR"/BlackPlus.TG.config --login --phone=${number}
+     echo -e "\033[0;33mBlackPlus now *running* > \033[0m"
+	 sleep 3
+  fi
+  killall -9 tg
+  while true; do
+  #rm -rf TG-data/telegram-cli/data/photo/*
+  #rm -rf TG-data/telegram-cli/data/thumb/*
+  echo -e "\033[0;32m--------------------------------------------------------------\033[0m"
+  toilet -f bigmono9 -F gay BlackPlus
+  echo -e "\033[0;32m                       [  T D - B O T  ]                      \033[0m"
+  echo -e "\033[0;32m--------------------------------------------------------------\033[0m"
+  echo -e "\033[0;33mTG date directory:\033[0m"
+  ./tg --config="$THIS_DIR"/BlackPlus.TG.config | grep -v "{"
+   sleep 3
+  done
+fi
